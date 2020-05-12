@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Nearby Test</string>
+    <string name="app_title">Proximity Test Project</string>
+    <string name="this_phone_position">Phone Position</string>
+</resources>
