@@ -34,22 +34,30 @@ public class MainActivity extends AppCompatActivity {
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
-    TextView latTextView, lonTextView;
-    Location oldLocation;
-    Double oldLatitude, oldLongitude;
+    TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
+    Location lastLocation;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+        lastLatitude = findViewById(R.id.lastLatTextView);
+        lastLongitude = findViewById(R.id.lastLongTextView);
+
         latTextView = findViewById(R.id.latTextView);
         lonTextView = findViewById(R.id.lonTextView);
+
+        distance = findViewById(R.id.distanceTextView);
+
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        //getLastLocation();
-        requestNewLocationData();
-
+        getLastLocation();
     }
 
     @SuppressLint("MissingPermission")
@@ -58,15 +66,16 @@ public class MainActivity extends AppCompatActivity {
             if (isLocationEnabled()) {
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(
                         new OnCompleteListener<Location>() {
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
-                                Location location = task.getResult();
-                                if (location == null) {
+                                lastLocation = task.getResult();
+                                if (lastLocation == null) {
                                     requestNewLocationData();
                                 } else {
-                                    latTextView.setText("latitude :  " + location.getLatitude());
-                                    lonTextView.setText("longitude :  " + location.getLongitude());
-                                    Log.d("hello2", "hello2");
+                                    lastLatitude.setText(getString(R.string.latitude) + String.valueOf(lastLocation.getLatitude()));
+                                    lastLongitude.setText(getString(R.string.longitude) + String.valueOf(lastLocation.getLongitude()));
+                                    requestNewLocationData();
                                 }
                             }
                         }
@@ -87,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(3000);
         //mLocationRequest.setNumUpdates(1);
         mLocationRequest.setExpirationDuration(120000); //2 mins
 
@@ -104,20 +113,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLocationResult(LocationResult locationResult) {
 
-            if (oldLocation != null) {
-                oldLatitude = oldLocation.getLatitude();
-                oldLongitude = oldLocation.getLongitude();
-            }
             Location mLastLocation = locationResult.getLastLocation();
-            latTextView.setText(mLastLocation.getLatitude()+"");
-            lonTextView.setText(mLastLocation.getLongitude()+"");
+            latTextView.setText(getString(R.string.latitude) + String.valueOf(mLastLocation.getLatitude()));
+            lonTextView.setText(getString(R.string.longitude) + String.valueOf(mLastLocation.getLongitude()));
+
+
 
             float [] results = new float[5];
-            Location.distanceBetween(oldLatitude, oldLongitude,mLastLocation.getLatitude(), mLastLocation.getLongitude(), results);
+            Location.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude(), results);
             Log.d("distance", Arrays.toString(results));
-            Log.d("hello", "hello");
 
-            oldLocation = mLastLocation;
+            for (int i = 0; i < results.length; i++){
+                Log.i("distance Array", Arrays.toString(results));
+            }
+
+            distance.setText(getString(R.string.distance) + String.valueOf(results[0]));
+
+
 
         }
     };

@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Nearby Test</string>
-    <string name="app_title">Proximity Test Project</string>
-    <string name="this_phone_position">Phone Position</string>
+    <string name="last_position_title">Last Position</string>
+    <string name="current_position_title">Current Position</string>
+    <string name="distance">Distance :&#160;</string>
+    <string name="latitude">Latitude :&#160;</string>
+    <string name="longitude">Longitude :&#160;</string>
+
 </resources>
