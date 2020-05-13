@@ -117,20 +117,12 @@ public class MainActivity extends AppCompatActivity {
             latTextView.setText(getString(R.string.latitude) + String.valueOf(mLastLocation.getLatitude()));
             lonTextView.setText(getString(R.string.longitude) + String.valueOf(mLastLocation.getLongitude()));
 
-
-
-            float [] results = new float[5];
+            float [] results = new float[3];
             Location.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude(), results);
-            Log.d("distance", Arrays.toString(results));
 
-            for (int i = 0; i < results.length; i++){
-                Log.i("distance Array", Arrays.toString(results));
-            }
+            Log.i("results array", Arrays.toString(results));
 
             distance.setText(getString(R.string.distance) + String.valueOf(results[0]));
-
-
-
         }
     };
 
