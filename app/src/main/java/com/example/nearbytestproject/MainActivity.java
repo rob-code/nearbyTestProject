@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,8 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +34,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.Arrays;
 
 //TODO Add:
+//      - Use android only Connections API using peer2peer strategy
 //      - responsive UI for lanscape and portrait
-//      - beacon technology?? for transferring location of nearby phones
 //      - DONE is the app using FINE or COARSE: Ensure Location is forced to use FINE - it is!!
 
 public class MainActivity extends AppCompatActivity {
@@ -41,22 +44,24 @@ public class MainActivity extends AppCompatActivity {
     FusedLocationProviderClient mFusedLocationClient;
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
-
+    Button scanButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
+        scanButton = findViewById(R.id.scanButton);
         lastLatitude = findViewById(R.id.lastLatTextView);
         lastLongitude = findViewById(R.id.lastLongTextView);
-
         latTextView = findViewById(R.id.latTextView);
         lonTextView = findViewById(R.id.lonTextView);
-
         distance = findViewById(R.id.distanceTextView);
+
+        scanButton.setOnClickListener(new View.OnClickListener() {
+                                          public void onClick(View v) {
+                                                startScanningForNearbyDevices();
+                                               }});
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -155,8 +160,6 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -175,6 +178,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    private void startScanningForNearbyDevices(){
+        Log.i("button clicked", "button clicked");
+    }
+
+
+
 }
 
 
@@ -192,102 +202,3 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-    /*
-
-
-    TextView searchText;
-    String message;
-    OtherPhoneDistance otherPhone;
-    Location location;
-    int PERMISSION_ID = 44;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        Log.d("at least someth", "something has happened");
-
-
-        TextView searchText = (TextView) findViewById(R.id.searchText);
-        searchText.setText("hello");
-        createLocationRequest();
-        getLastLocation();
-    }
-
-
-    protected void createLocationRequest() {
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-        // ...
-
-        SettingsClient client = LocationServices.getSettingsClient(this);
-        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-        Log.d(task.toString(), "this is the task");
-
-    }
-
-    public void getLastLocation () {
-        FusedLocationProviderClient fusedLocationClient;
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        Log.d(location.toString(), "the location exists"); // Logic to handle location object
-                        onLocationChanged(location);
-                    }
-
-                }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("MapDemoActivity", "Error trying to get last GPS location");
-                        e.printStackTrace();
-                    }
-        });
-
-
-    }
-
-
-
-
-    public void onLocationChanged(Location location) {
-        // New location has now been determined
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        // You can now create a LatLng Object for use with maps
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-    }
-
-    public void isDeviceNearby (){
-
-        if (otherPhone.getDistance() < 2.0) {
-            searchText.setText("whoa - you're close");
-        } else {
-            searchText.setText("OK - this is safe");
-        }
-    }
-
-
-
-
-}
-
-*/
