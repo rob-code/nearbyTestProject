@@ -30,13 +30,17 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.Arrays;
 
+//TODO Add:
+//      - responsive UI for lanscape and portrait
+//      - beacon technology?? for transferring location of nearby phones
+//      - DONE is the app using FINE or COARSE: Ensure Location is forced to use FINE - it is!!
+
 public class MainActivity extends AppCompatActivity {
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
-
 
 
     @Override
@@ -53,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         lonTextView = findViewById(R.id.lonTextView);
 
         distance = findViewById(R.id.distanceTextView);
-
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private void requestNewLocationData(){
 
         LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); //location updates accurate to < 1m
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(3000);
         //mLocationRequest.setNumUpdates(1);
@@ -119,10 +122,13 @@ public class MainActivity extends AppCompatActivity {
 
             float [] results = new float[3];
             Location.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude(), results);
+            distance.setText(getString(R.string.distance) + String.valueOf(results[0]));
+
+            lastLocation = mLastLocation;
+            lastLatitude.setText(getString(R.string.latitude) + String.valueOf(lastLocation.getLatitude()));
+            lastLongitude.setText(getString(R.string.longitude) + String.valueOf(lastLocation.getLongitude()));
 
             Log.i("results array", Arrays.toString(results));
-
-            distance.setText(getString(R.string.distance) + String.valueOf(results[0]));
         }
     };
 
