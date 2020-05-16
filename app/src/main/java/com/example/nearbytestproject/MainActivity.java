@@ -3,10 +3,10 @@ package com.example.nearbytestproject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,8 +26,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -40,11 +38,13 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    int PERMISSION_ID = 44;
+    int MYLOCATION = 44;
+    int EXTERNAL_STORAGE = 55;
     FusedLocationProviderClient mFusedLocationClient;
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
     Button scanButton;
+    Boolean isPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         latTextView = findViewById(R.id.latTextView);
         lonTextView = findViewById(R.id.lonTextView);
         distance = findViewById(R.id.distanceTextView);
+
 
         scanButton.setOnClickListener(new View.OnClickListener() {
                                           public void onClick(View v) {
@@ -114,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper()
         );
-
     }
 
     private LocationCallback mLocationCallback = new LocationCallback() {
@@ -156,16 +156,29 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(
                 this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                PERMISSION_ID
+                MYLOCATION
         );
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_ID) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == MYLOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
+            }
+        }
+
+        if (requestCode == EXTERNAL_STORAGE) {
+            Log.i("length ",  String.valueOf(grantResults.length));
+            Log.i("grantResults ",  String.valueOf(grantResults[0]));
+            Log.i("packageManager ",  String.valueOf(PackageManager.PERMISSION_GRANTED));
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Please allow access to files", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -180,8 +193,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startScanningForNearbyDevices(){
-        Log.i("button clicked", "button clicked");
+
+        if (checkNearbyPermissions()) {
+            isPressed = !isPressed;
+            //get started with send and recieve lat and longitude
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE);
+        };
+
+        }
+
+    private boolean checkNearbyPermissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Log.i("external storage", "permission not yet granted!");
+                return false;
+        }
+            else {
+                return true;
+        }
     }
+
+
+
 
 
 
