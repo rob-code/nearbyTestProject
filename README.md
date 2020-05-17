@@ -23,6 +23,6 @@ To Do:
 - [ ] how best to monetise
  
 - [x] ensure Location is forced to use FINE rather than coarse
-- [x] app icon - people with lightning arrow between them
+- [x] app icon - figures with green lightning arrow
 
 
