@@ -9,7 +9,7 @@ If the distance is less than a specified value (ie 2m required by UK social dist
 
 
 
-ToDo:
+To Do:
 
 - [ ] Use Connections API using peer2peer strategy (will communicate only between android)
 - [ ] responsive UI for landscape and portrait
