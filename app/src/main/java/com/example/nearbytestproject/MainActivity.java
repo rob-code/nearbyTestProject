@@ -1,10 +1,5 @@
 package com.example.nearbytestproject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -30,6 +25,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.Arrays;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 //TODO Add:
 //      - Use android only Connections API using peer2peer strategy
@@ -161,8 +160,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        if (checkPermissions()) {
+            getLastLocation();
+        }
+
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == MYLOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -173,44 +181,28 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == EXTERNAL_STORAGE) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                Log.i("lets start", "sending and receiving ");
-
+                isActive = !isActive;
+                Toast.makeText(this, "Scanning for nearby devices", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Please allow access to files", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        if (checkPermissions()) {
-            getLastLocation();
-        }
 
-    }
+
+
+
+
+
+
+
+
+
+
 
     private void startScanningForNearbyDevices(){
-
-        if (checkNearbyPermissions()) {
-            isActive = !isActive;
-            //get started with send and recieve lat and longitude
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE);
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE);
-        };
-
-        }
-
-    private boolean checkNearbyPermissions(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Log.i("external storage", "permission not yet granted!");
-                return false;
-        }
-            else {
-                return true;
-        }
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE);
     }
 
 
