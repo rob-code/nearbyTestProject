@@ -16,7 +16,9 @@ To Do:
 - [ ] add method of alerting the user to a phone close by using colour, sound and vibration
 - [ ] need to get the name of the user (which user adds and the app saves) or the name of the
  phone? 
-- [ ] nice background graphic for the app screen and app icon
+- [ ] nice background graphic for the app screen
+- [ ] app icon - 1st draft looks a bit naff; maybe try people with lightning arrow between them
+- [ ] toggle button for scan on and scan off 
 - [ ] review most accurate methods for finding the distance between devices 
 - [x] ensure Location is forced to use FINE rather than coarse
 
