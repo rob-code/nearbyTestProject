@@ -37,8 +37,8 @@ import androidx.core.app.ActivityCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    int MYLOCATION = 44;
-    int EXTERNAL_STORAGE = 55;
+    final int LOCATION_ID = 44;
+    final int EXTERNAL_STORAGE_ID = 55;
     FusedLocationProviderClient mFusedLocationClient;
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(
                 this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                MYLOCATION
+                LOCATION_ID
         );
     }
 
@@ -172,37 +172,29 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == MYLOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
-            }
-        }
+        switch (requestCode) {
+            case LOCATION_ID: {
 
-        if (requestCode == EXTERNAL_STORAGE) {
-
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                isActive = !isActive;
-                Toast.makeText(this, "Scanning for nearby devices", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Please allow access to files", Toast.LENGTH_LONG).show();
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLastLocation();
+                }
             }
+
+            case EXTERNAL_STORAGE_ID: {
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    isActive = !isActive;
+                    Toast.makeText(this, "Scanning for nearby devices", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Please allow access to files", Toast.LENGTH_LONG).show();
+                }
+            }
+
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     private void startScanningForNearbyDevices(){
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_ID);
     }
 
 
