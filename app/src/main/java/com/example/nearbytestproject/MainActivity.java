@@ -30,11 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-//TODO Add:
-//      - Use android only Connections API using peer2peer strategy
-//      - responsive UI for lanscape and portrait
-//      - DONE is the app using FINE or COARSE: Ensure Location is forced to use FINE - it is!!
-
 public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_ID = 44;
