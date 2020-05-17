@@ -13,7 +13,6 @@ Using Connections API using peer2peer strategy (will communicate only between an
 To Do:
 
 - [ ] add send & receive methods for ConnectonsAPI 
-- [ ] toggle button for scan on and scan off
 - [ ] responsive UI for landscape and portrait
 - [ ] add method of alerting the user to a phone close by using colour, sound and vibration
 - [ ] need to get the name of the user (which user adds and the app saves) or the name of the
@@ -23,7 +22,8 @@ To Do:
 - [ ] review most accurate methods for finding the distance between devices which works on iOS
  and Android
 - [ ] how best to monetise
- 
+
+- [x] toggle button for scan on and scan off 
 - [x] ensure Location is forced to use FINE rather than coarse
 - [x] app icon - figures with green lightning arrow
 
