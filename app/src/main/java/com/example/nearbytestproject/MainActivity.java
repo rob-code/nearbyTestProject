@@ -12,9 +12,10 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -37,29 +38,41 @@ public class MainActivity extends AppCompatActivity {
     FusedLocationProviderClient mFusedLocationClient;
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
-    Button scanButton;
-    Boolean isActive = false;
+    ToggleButton toggleButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        scanButton = findViewById(R.id.scanButton);
         lastLatitude = findViewById(R.id.lastLatTextView);
         lastLongitude = findViewById(R.id.lastLongTextView);
         latTextView = findViewById(R.id.latTextView);
         lonTextView = findViewById(R.id.lonTextView);
         distance = findViewById(R.id.distanceTextView);
 
+        toggleButton = findViewById(R.id.toggleButton);
 
-        scanButton.setOnClickListener(new View.OnClickListener() {
-                                          public void onClick(View v) {
-                                                startScanningForNearbyDevices();
-                                               }});
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (checkStoragePermission()) {
+                        startScanningForNearbyDevices();
+                    } else {
+                        requestStoragePermission();
+                        toggleButton.setChecked(false);
+                    }
+                } else {
+                    stopScanningForNearbyDevices();
+                }
+            }
+        });
+
+
+
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         getLastLocation();
     }
 
@@ -139,6 +152,18 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    private boolean checkStoragePermission() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
+    }
+
+    private void requestStoragePermission() {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_ID);
+    }
+
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
@@ -174,25 +199,29 @@ public class MainActivity extends AppCompatActivity {
                     getLastLocation();
                 }
             }
-
             case EXTERNAL_STORAGE_ID: {
 
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    isActive = !isActive;
-                    Toast.makeText(this, "Scanning for nearby devices", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this, "Please allow access to files", Toast.LENGTH_LONG).show();
+                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Please allow access to files", Toast.LENGTH_SHORT).show();
                 }
             }
 
         }
     }
 
+
+
     private void startScanningForNearbyDevices(){
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_ID);
+        Toast.makeText(this, "Scanning ... ", Toast.LENGTH_SHORT).show();
+        //todo
+
     }
 
 
+    private void stopScanningForNearbyDevices(){
+        Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
+        // todo
+    }
 
 
 

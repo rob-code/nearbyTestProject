@@ -6,5 +6,7 @@
     <string name="latitude">Latitude :&#160;</string>
     <string name="longitude">Longitude :&#160;</string>
     <string name="scan">Scan for Devices</string>
+    <string name="toggle_off">Start scanning</string>
+    <string name="toggle_on">Stop scanning</string>
 
 </resources>
