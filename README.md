@@ -7,17 +7,19 @@ A first draft of an android app which uses its location and the location receive
 If the distance is less than a specified value (ie 2m required by UK social distancing), the app
  warns the phone owner to back away. Most people seem to underestimate how far 2m actually is and stand too close.
 
+Using Connections API using peer2peer strategy (will communicate only between android)
 
 
 To Do:
 
-- [ ] Use Connections API using peer2peer strategy (will communicate only between android)
+- [ ] add send & receive methods for ConnectonsAPI 
+- [ ] toggle button for scan on and scan off
 - [ ] responsive UI for landscape and portrait
 - [ ] add method of alerting the user to a phone close by using colour, sound and vibration
 - [ ] need to get the name of the user (which user adds and the app saves) or the name of the
  phone? 
 - [ ] nice background graphic for the app screen
-- [ ] toggle button for scan on and scan off
+
 - [ ] review most accurate methods for finding the distance between devices which works on iOS
  and Android
 - [ ] how best to monetise
