@@ -13,12 +13,11 @@ Using Connections API using peer2peer strategy (will communicate only between an
 To Do:
 
 - [ ] add send & receive methods for ConnectonsAPI 
-- [ ] responsive UI for landscape and portrait
 - [ ] add method of alerting the user to a phone close by using colour, sound and vibration
+- [ ] responsive UI for landscape and portrait
 - [ ] need to get the name of the user (which user adds and the app saves) or the name of the
  phone? 
 - [ ] nice background graphic for the app screen
-
 - [ ] review most accurate methods for finding the distance between devices which works on iOS
  and Android
 - [ ] how best to monetise

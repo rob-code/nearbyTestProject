@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         distance = findViewById(R.id.distanceTextView);
 
         toggleButton = findViewById(R.id.toggleButton);
-
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -220,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void stopScanningForNearbyDevices(){
         Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
-        // todo
+        //todo
     }
 
 
