@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
     Button scanButton;
-    Boolean isPressed = false;
+    Boolean isActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,12 +171,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (requestCode == EXTERNAL_STORAGE) {
-            Log.i("length ",  String.valueOf(grantResults.length));
-            Log.i("grantResults ",  String.valueOf(grantResults[0]));
-            Log.i("packageManager ",  String.valueOf(PackageManager.PERMISSION_GRANTED));
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission granted", Toast.LENGTH_LONG).show();
+
+                Log.i("lets start", "sending and receiving ");
+
             } else {
                 Toast.makeText(this, "Please allow access to files", Toast.LENGTH_LONG).show();
             }
@@ -195,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     private void startScanningForNearbyDevices(){
 
         if (checkNearbyPermissions()) {
-            isPressed = !isPressed;
+            isActive = !isActive;
             //get started with send and recieve lat and longitude
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE);
         } else {
