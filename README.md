@@ -13,6 +13,10 @@ To Do:
 
 - [ ] Use Connections API using peer2peer strategy (will communicate only between android)
 - [ ] responsive UI for landscape and portrait
+- [ ] add method of alerting the user to a phone close by using colour, sound and vibration
+- [ ] need to get the name of the user (which user adds and the app saves) or the name of the
+ phone? 
+- [ ] nice background graphic for the app screen and app icon
 - [ ] review most accurate methods for finding the distance between devices 
 - [x] ensure Location is forced to use FINE rather than coarse
 
