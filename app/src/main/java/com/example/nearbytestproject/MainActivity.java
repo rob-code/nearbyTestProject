@@ -23,7 +23,16 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AdvertisingOptions;
+import com.google.android.gms.nearby.connection.ConnectionInfo;
+import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback;
+import com.google.android.gms.nearby.connection.ConnectionResolution;
+import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
+import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo;
 import com.google.android.gms.nearby.connection.DiscoveryOptions;
+import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
+import com.google.android.gms.nearby.connection.Payload;
+import com.google.android.gms.nearby.connection.PayloadCallback;
+import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
     ToggleButton toggleButton;
-    String SERVICE_ID = "com.example.nearbytestproject";
+    String SERVICE_ID = "com.gothinklearning.example.nearbytestproject";
 
 
     @Override
@@ -252,6 +261,90 @@ public class MainActivity extends AppCompatActivity {
     private String getUserNickname () {
      return Settings.System.getString(getContentResolver(),"lock_screen_owner_info");
     }
+
+
+    private final EndpointDiscoveryCallback endpointDiscoveryCallback =
+            new EndpointDiscoveryCallback() {
+                @Override
+                public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info) {
+                    // An endpoint was found. We request a connection to it.
+                    Context context = getApplicationContext();
+                    Nearby.getConnectionsClient(context)
+                            .requestConnection(getUserNickname(), endpointId, connectionLifecycleCallback)
+                            .addOnSuccessListener(
+                                    (Void unused) -> {
+                                        // We successfully requested a connection. Now both sides
+                                        // must accept before the connection is established.
+                                    })
+                            .addOnFailureListener(
+                                    (Exception e) -> {
+                                        // Nearby Connections failed to request the connection.
+                                    });
+                }
+
+                @Override
+                public void onEndpointLost(String endpointId) {
+                    // A previously discovered endpoint has gone away.
+                }
+            };
+
+
+
+
+    private final ConnectionLifecycleCallback connectionLifecycleCallback =
+            new ConnectionLifecycleCallback() {
+                @Override
+                public void onConnectionInitiated(String endpointId, ConnectionInfo connectionInfo) {
+                    // Automatically accept the connection on both sides.
+                    Context context = getApplicationContext();
+                    Nearby.getConnectionsClient(context).acceptConnection(endpointId, payloadCallback);
+                }
+
+                @Override
+                public void onConnectionResult(String endpointId, ConnectionResolution result) {
+                    switch (result.getStatus().getStatusCode()) {
+                        case ConnectionsStatusCodes.STATUS_OK:
+                            // We're connected! Can now start sending and receiving data.
+                            break;
+                        case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
+                            // The connection was rejected by one or both sides.
+                            break;
+                        case ConnectionsStatusCodes.STATUS_ERROR:
+                            // The connection broke before it was able to be accepted.
+                            break;
+                        default:
+                            // Unknown status code
+                    }
+                }
+
+                @Override
+                public void onDisconnected(String endpointId) {
+                    // We've been disconnected from this endpoint. No more data can be
+                    // sent or received.
+                }
+            };
+
+
+    private final PayloadCallback payloadCallback = new PayloadCallback() {
+        @Override
+        public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
+            //
+        }
+
+        @Override
+        public void onPayloadTransferUpdate(@NonNull String s, @NonNull PayloadTransferUpdate payloadTransferUpdate) {
+            //
+        }
+    };
+
+
+
+
+
+
+
+
+
 
 
 
