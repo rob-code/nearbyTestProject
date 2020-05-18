@@ -85,9 +85,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
     }
@@ -145,18 +142,19 @@ public class MainActivity extends AppCompatActivity {
         public void onLocationResult(LocationResult locationResult) {
 
             Location mLastLocation = locationResult.getLastLocation();
-            latTextView.setText(getString(R.string.latitude) + String.valueOf(mLastLocation.getLatitude()));
-            lonTextView.setText(getString(R.string.longitude) + String.valueOf(mLastLocation.getLongitude()));
+            latTextView.setText( getString( R.string.latitude ) + String.valueOf( mLastLocation.getLatitude() ) );
+            lonTextView.setText( getString( R.string.longitude ) + String.valueOf( mLastLocation.getLongitude() ) );
 
-            float [] results = new float[3];
-            Location.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude(), results);
-            distance.setText(getString(R.string.distance) + String.valueOf(results[0]));
+            float[] results = new float[3];
+            Location.distanceBetween( lastLocation.getLatitude(), lastLocation.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude(), results );
+            distance.setText( getString( R.string.distance ) + String.valueOf( results[0] ) );
 
             lastLocation = mLastLocation;
-            lastLatitude.setText(getString(R.string.latitude) + String.valueOf(lastLocation.getLatitude()));
-            lastLongitude.setText(getString(R.string.longitude) + String.valueOf(lastLocation.getLongitude()));
+            lastLatitude.setText( getString( R.string.latitude ) + String.valueOf( lastLocation.getLatitude() ) );
+            lastLongitude.setText( getString( R.string.longitude ) + String.valueOf( lastLocation.getLongitude() ) );
 
-            Log.i("results array", Arrays.toString(results));
+            Log.i( "results array", Arrays.toString( results ) );
+
         }
     };
 
@@ -244,7 +242,8 @@ public class MainActivity extends AppCompatActivity {
     private void startDiscovery() {
         DiscoveryOptions discoveryOptions =
                 new DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build();
-        Nearby.getConnectionsClient(this)
+        Context context = getApplicationContext();
+        Nearby.getConnectionsClient(context)
                 .startDiscovery(SERVICE_ID, endpointDiscoveryCallback, discoveryOptions)
                 .addOnSuccessListener(
                         (Void unused) -> {
@@ -258,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getUserNickname () {
      return Settings.System.getString(getContentResolver(),"lock_screen_owner_info");
-    }
+    };
 
 
     private final EndpointDiscoveryCallback endpointDiscoveryCallback =
@@ -292,7 +291,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onConnectionInitiated(String endpointId, ConnectionInfo connectionInfo) {
                     // Automatically accept the connection on both sides.
                     Context context = getApplicationContext();
-                    Nearby.getConnectionsClient(context).acceptConnection(endpointId, payloadCallback);
+                    Nearby.getConnectionsClient( context ).acceptConnection( endpointId, payloadCallback );
+                }
 
                     /*
                     This builds in authentication of the device - whihc we can leave for the moment
@@ -313,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 */
-                }
 
                 @Override
                 public void onConnectionResult(String endpointId, ConnectionResolution result) {
@@ -339,10 +338,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
+
+
+
     private final PayloadCallback payloadCallback = new PayloadCallback() {
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
-            //
+           // byte[] receivedBytes = payload.asBytes();
         }
 
         @Override
@@ -363,16 +365,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void stopAdvertising(){
-        Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
         //todo
-    }
+    };
 
 
     private void stopDiscovery(){
-        Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
         //todo
-    }
-
+    };
 
 }
 
