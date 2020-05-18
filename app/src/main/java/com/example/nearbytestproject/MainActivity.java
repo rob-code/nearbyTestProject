@@ -2,7 +2,9 @@ package com.example.nearbytestproject;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -287,9 +289,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-
-
-
     private final ConnectionLifecycleCallback connectionLifecycleCallback =
             new ConnectionLifecycleCallback() {
                 @Override
@@ -297,6 +296,26 @@ public class MainActivity extends AppCompatActivity {
                     // Automatically accept the connection on both sides.
                     Context context = getApplicationContext();
                     Nearby.getConnectionsClient(context).acceptConnection(endpointId, payloadCallback);
+
+                    /*
+                    This builds in authentication of the device - whihc we can leave for the moment
+                    new AlertDialog.Builder(context)
+                            .setTitle("Accept connection to " + info.getEndpointName())
+                            .setMessage("Confirm the code matches on both devices: " + info.getAuthenticationToken())
+                            .setPositiveButton(
+                                    "Accept",
+                                    (DialogInterface dialog, int which) ->
+                                            // The user confirmed, so we can accept the connection.
+                                            Nearby.getConnectionsClient(context)
+                                                    .acceptConnection(endpointId, payloadCallback))
+                            .setNegativeButton(
+                                    android.R.string.cancel,
+                                    (DialogInterface dialog, int which) ->
+                                            // The user canceled, so we should reject the connection.
+                                            Nearby.getConnectionsClient(context).rejectConnection(endpointId))
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                */
                 }
 
                 @Override
@@ -322,7 +341,6 @@ public class MainActivity extends AppCompatActivity {
                     // sent or received.
                 }
             };
-
 
     private final PayloadCallback payloadCallback = new PayloadCallback() {
         @Override
