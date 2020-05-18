@@ -226,9 +226,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startAdvertising(){
-        //Toast.makeText(this, "Scanning ... ", Toast.LENGTH_SHORT).show();
-        //todo
-
         AdvertisingOptions advertisingOptions =
                 new AdvertisingOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build();
         Nearby.getConnectionsClient(this)
