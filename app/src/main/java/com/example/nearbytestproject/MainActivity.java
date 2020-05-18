@@ -71,12 +71,14 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked) {
                     if (checkStoragePermission()) {
                         startAdvertising();
+                        startDiscovery();
                     } else {
                         requestStoragePermission();
                         toggleButton.setChecked(false);
                     }
                 } else {
                     stopAdvertising();
+                    stopDiscovery();
                 }
             }
         });
@@ -238,9 +240,6 @@ public class MainActivity extends AppCompatActivity {
                         (Exception e) -> {
                             // We were unable to start advertising.
                         });
-
-
-
     }
 
     private void startDiscovery() {
