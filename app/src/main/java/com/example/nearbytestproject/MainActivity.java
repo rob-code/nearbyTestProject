@@ -21,6 +21,10 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.connection.AdvertisingOptions;
+import com.google.android.gms.nearby.connection.DiscoveryOptions;
+import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
     ToggleButton toggleButton;
+    String SERVICE_ID = "com.example.nearbytestproject";
 
 
     @Override
@@ -56,13 +61,13 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     if (checkStoragePermission()) {
-                        startScanningForNearbyDevices();
+                        startAdvertising();
                     } else {
                         requestStoragePermission();
                         toggleButton.setChecked(false);
                     }
                 } else {
-                    stopScanningForNearbyDevices();
+                    stopAdvertising();
                 }
             }
         });
@@ -207,21 +212,59 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-    private void startScanningForNearbyDevices(){
-        Toast.makeText(this, "Scanning ... ", Toast.LENGTH_SHORT).show();
+    private void startAdvertising(){
+        //Toast.makeText(this, "Scanning ... ", Toast.LENGTH_SHORT).show();
         //todo
+
+        AdvertisingOptions advertisingOptions =
+                new AdvertisingOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build();
+        Nearby.getConnectionsClient(this)
+                .startAdvertising(
+                        getUserNickname(), SERVICE_ID, connectionLifecycleCallback, advertisingOptions)
+                .addOnSuccessListener(
+                        (Void unused) -> {
+                            // We're advertising!
+                        })
+                .addOnFailureListener(
+                        (Exception e) -> {
+                            // We were unable to start advertising.
+                        });
+
+
 
     }
 
+    private void startDiscovery() {
+        DiscoveryOptions discoveryOptions =
+                new DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build();
+        Nearby.getConnectionsClient(this)
+                .startDiscovery(SERVICE_ID, endpointDiscoveryCallback, discoveryOptions)
+                .addOnSuccessListener(
+                        (Void unused) -> {
+                            // We're discovering!
+                        })
+                .addOnFailureListener(
+                        (Exception e) -> {
+                            // We're unable to start discovering.
+                        });
+    }
 
-    private void stopScanningForNearbyDevices(){
+    private String getUserNickname () {
+     return Settings.System.getString(getContentResolver(),"lock_screen_owner_info");
+    }
+
+
+
+    private void stopAdvertising(){
         Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
         //todo
     }
 
 
+    private void stopDiscovery(){
+        Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
+        //todo
+    }
 
 
 }
