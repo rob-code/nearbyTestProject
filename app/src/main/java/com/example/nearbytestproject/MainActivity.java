@@ -41,9 +41,11 @@ import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -140,12 +142,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private LocationCallback mLocationCallback = new LocationCallback() {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onLocationResult(LocationResult locationResult) {
 
             Location mLastLocation = locationResult.getLastLocation();
             latTextView.setText( getString( R.string.latitude ) + String.valueOf( mLastLocation.getLatitude() ) );
             lonTextView.setText( getString( R.string.longitude ) + String.valueOf( mLastLocation.getLongitude() ) );
+
+            makeByteArray(mLastLocation);
 
             float[] results = new float[3];
             Location.distanceBetween( lastLocation.getLatitude(), lastLocation.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude(), results );
@@ -159,6 +164,27 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        private void makeByteArray(Location location) {
+
+            String dataToSend = " lat: " + String.valueOf( location.getLatitude()) + " long: " + String.valueOf( location.getLongitude());
+            Log.i("data to send", dataToSend);
+            byte [] bytes = dataToSend.getBytes( StandardCharsets.UTF_8);
+            Log.i("data to send in Bytes", Arrays.toString(bytes));
+
+            String receivedData = new String(bytes);
+            Log.i("received data", receivedData);
+
+
+//            byte latLong = Double.doubleToLongBits( dataLat );
+  //          byte longLong [] = Double.( dataLong );
+
+
+            //return latByte[8];
+        }
+
+
 
     private boolean checkPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -324,6 +350,9 @@ public class MainActivity extends AppCompatActivity {
                         case ConnectionsStatusCodes.STATUS_OK:
                             // We're connected! Can now start sending and receiving data.
                             //**** Its here we should be generating and sending the location data
+
+                            sendData(endpointId);
+
                             break;
                         case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
                             // The connection was rejected by one or both sides.
@@ -344,6 +373,14 @@ public class MainActivity extends AppCompatActivity {
             };
 
 
+    private void sendData(String toEndPointId) {
+
+        //Payload bytesPayload = Payload.fromBytes( new byte[]  );
+        //Context context = getApplicationContext();
+        //Nearby.getConnectionsClient(context).sendPayload(toEndPointId, bytesPayload);
+
+
+    }
 
 
     private final PayloadCallback payloadCallback = new PayloadCallback() {
