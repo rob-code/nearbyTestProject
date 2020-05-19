@@ -176,12 +176,6 @@ public class MainActivity extends AppCompatActivity {
             String receivedData = new String(bytes, StandardCharsets.UTF_8);
             Log.i("received data", receivedData);
 
-
-//            byte latLong = Double.doubleToLongBits( dataLat );
-  //          byte longLong [] = Double.( dataLong );
-
-
-            //return latByte[8];
         }
 
 
