@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             byte [] bytes = dataToSend.getBytes( StandardCharsets.UTF_8);
             Log.i("data to send in Bytes", Arrays.toString(bytes));
 
-            String receivedData = new String(bytes);
+            String receivedData = new String(bytes, StandardCharsets.UTF_8);
             Log.i("received data", receivedData);
 
 
