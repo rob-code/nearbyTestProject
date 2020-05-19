@@ -168,13 +168,20 @@ public class MainActivity extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         private void makeByteArray(Location location) {
 
-            String dataToSend = "lat:" + String.valueOf( location.getLatitude()) + "long:" + String.valueOf( location.getLongitude());
+            String dataToSend = String.valueOf( location.getLatitude()) + "," + String.valueOf(location.getLongitude());
             Log.i("data to send", dataToSend);
             byte [] bytes = dataToSend.getBytes( StandardCharsets.UTF_8);
             Log.i("data to send in Bytes", Arrays.toString(bytes));
 
             String receivedData = new String(bytes, StandardCharsets.UTF_8);
             Log.i("received data", receivedData);
+
+            //Turn string back into Double latitude and Double longitude
+            String[] splitted = receivedData.split(",");
+            Log.i("latitude", splitted[0]);
+            Log.i("longitude", splitted[1]);
+            Double lat = Double.valueOf( splitted[0]);
+            Double lon = Double.valueOf( splitted[1]);
 
         }
 
