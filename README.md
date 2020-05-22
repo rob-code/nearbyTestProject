@@ -20,7 +20,7 @@ To Do:
 - [ ] nice background graphic for the app screen
 - [ ] review most accurate methods for finding the distance between devices which works on iOS
  and Android
-- [ ] how best to monetise
+- [ ] how best to monetise: add a scotsman voice and pay for more. Make it funny.
 
 - [x] toggle button for scan on and scan off 
 - [x] ensure Location is forced to use FINE rather than coarse
