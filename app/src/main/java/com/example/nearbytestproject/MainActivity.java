@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         public void onLocationResult(LocationResult locationResult) {
 
             Location mLastLocation = locationResult.getLastLocation();
+            //ToDo this should be split into a string and a value in the dsiplay, ie 2 UI elements, not a long string!
             latTextView.setText( getString( R.string.latitude ) + String.valueOf( mLastLocation.getLatitude() ) );
             lonTextView.setText( getString( R.string.longitude ) + String.valueOf( mLastLocation.getLongitude() ) );
 
