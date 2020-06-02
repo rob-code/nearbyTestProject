@@ -2,10 +2,7 @@ package com.example.nearbytestproject;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -56,9 +53,11 @@ public class MainActivity extends AppCompatActivity {
     FusedLocationProviderClient mFusedLocationClient;
     TextView latTextView, lonTextView , lastLatitude, lastLongitude, distance;
     Location lastLocation;
+    Location mLastLocation;
     ToggleButton toggleButton;
     String SERVICE_ID = "com.gothinklearning.example.nearbytestproject";
-
+    boolean nearbyStatus = false;
+    String connectedEndpointID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,47 +145,28 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLocationResult(LocationResult locationResult) {
 
-            Location mLastLocation = locationResult.getLastLocation();
+            mLastLocation = locationResult.getLastLocation();
             //ToDo this should be split into a string and a value in the dsiplay, ie 2 UI elements, not a long string!
             latTextView.setText( getString( R.string.latitude ) + String.valueOf( mLastLocation.getLatitude() ) );
             lonTextView.setText( getString( R.string.longitude ) + String.valueOf( mLastLocation.getLongitude() ) );
 
-            makeByteArray(mLastLocation);
-
-            float[] results = new float[3];
-            Location.distanceBetween( lastLocation.getLatitude(), lastLocation.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude(), results );
-            distance.setText( getString( R.string.distance ) + String.valueOf( results[0] ) );
+            sendData(makeByteArray(mLastLocation));
 
             lastLocation = mLastLocation;
             lastLatitude.setText( getString( R.string.latitude ) + String.valueOf( lastLocation.getLatitude() ) );
             lastLongitude.setText( getString( R.string.longitude ) + String.valueOf( lastLocation.getLongitude() ) );
-
-            Log.i( "results array", Arrays.toString( results ) );
-
         }
     };
 
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-        private void makeByteArray(Location location) {
+        private byte[] makeByteArray(Location location) {
 
             String dataToSend = String.valueOf( location.getLatitude()) + "," + String.valueOf(location.getLongitude());
             Log.i("data to send", dataToSend);
             byte [] bytes = dataToSend.getBytes( StandardCharsets.UTF_8);
-            Log.i("data to send in Bytes", Arrays.toString(bytes));
 
-            String receivedData = new String(bytes, StandardCharsets.UTF_8);
-            Log.i("received data", receivedData);
-
-            //Turn string back into Double latitude and Double longitude
-            String[] splitted = receivedData.split(",");
-            Log.i("latitude", splitted[0]);
-            Log.i("longitude", splitted[1]);
-            Double lat = Double.valueOf( splitted[0]);
-            Double lon = Double.valueOf( splitted[1]);
-
+            return bytes;
         }
-
-
 
     private boolean checkPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -261,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                         getUserNickname(), SERVICE_ID, connectionLifecycleCallback, advertisingOptions)
                 .addOnSuccessListener(
                         (Void unused) -> {
-                            // We're advertising!
+                            Log.i("we're advertsing", "send out the ad");
                         })
                 .addOnFailureListener(
                         (Exception e) -> {
@@ -277,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 .startDiscovery(SERVICE_ID, endpointDiscoveryCallback, discoveryOptions)
                 .addOnSuccessListener(
                         (Void unused) -> {
-                            // We're discovering!
+                            Log.i("we're discovering", "looking for a signal");
                         })
                 .addOnFailureListener(
                         (Exception e) -> {
@@ -304,10 +284,12 @@ public class MainActivity extends AppCompatActivity {
                                     (Void unused) -> {
                                         // We successfully requested a connection. Now both sides
                                         // must accept before the connection is established.
+                                        Log.i("request con", "request connection");
                                     })
                             .addOnFailureListener(
                                     (Exception e) -> {
                                         // Nearby Connections failed to request the connection.
+                                        Log.i("failed ", "request connection failed");
                                     });
                 }
 
@@ -353,7 +335,8 @@ public class MainActivity extends AppCompatActivity {
                             // We're connected! Can now start sending and receiving data.
                             //**** Its here we should be generating and sending the location data
 
-                            sendData(endpointId);
+                            nearbyStatus = true;
+                            connectedEndpointID = endpointId;
 
                             break;
                         case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
@@ -375,20 +358,45 @@ public class MainActivity extends AppCompatActivity {
             };
 
 
-    private void sendData(String toEndPointId) {
+    private void sendData(byte [] dataToSend) {
 
-        //Payload bytesPayload = Payload.fromBytes( new byte[]  );
-        //Context context = getApplicationContext();
-        //Nearby.getConnectionsClient(context).sendPayload(toEndPointId, bytesPayload);
+        if (nearbyStatus) {
+            Payload bytesPayload = Payload.fromBytes( dataToSend );
+            Context context = getApplicationContext();
+            Nearby.getConnectionsClient(context).sendPayload(connectedEndpointID, bytesPayload);
+            Log.i( "sending some data", connectedEndpointID );
+            Log.i("data to send in Bytes", Arrays.toString(dataToSend));
+        }
 
 
-    }
+
+    };
 
 
     private final PayloadCallback payloadCallback = new PayloadCallback() {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
-           // byte[] receivedBytes = payload.asBytes();
+           byte[] receivedBytes = payload.asBytes();
+            String receivedData = new String(receivedBytes, StandardCharsets.UTF_8);
+            String[] splitted = receivedData.split(",");
+            //Log.i("latitude", splitted[0]);
+            //Log.i("longitude", splitted[1]);
+            Double lat = Double.valueOf( splitted[0]);
+            Double lon = Double.valueOf( splitted[1]);
+
+            Log.i("received lat", String.valueOf(lat));
+            Log.i("received long", String.valueOf(lon));
+            Log.i("this lat", String.valueOf(mLastLocation.getLatitude()));
+            Log.i("this long", String.valueOf(mLastLocation.getLongitude()));
+
+
+            float[] results = new float[3];
+            Location.distanceBetween( mLastLocation.getLatitude(), mLastLocation.getLongitude(), lat, lon, results );
+            distance.setText( getString( R.string.distance ) + String.valueOf( results[0] ) );
+
+
+
         }
 
         @Override
@@ -411,13 +419,13 @@ public class MainActivity extends AppCompatActivity {
     private void stopAdvertising(){
         //Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
         //todo
-    };
+    }
 
 
     private void stopDiscovery(){
         //Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
         //todo
-    };
+    }
 
 }
 
