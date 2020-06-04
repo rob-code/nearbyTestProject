@@ -41,8 +41,7 @@ Not so. The range between successive lat long returns from the FusedLocationProv
 
 ## Connection Between Phones
 
-The connections between phones provide by the Nearby Conections API were unreliable. Connections kept dropping out and it was unclear what their status was at any time
- . Users have to accept the bluetooth conection and allow pairing between the devices. Even when
+The connections between phones provide by the Nearby Conections API were unreliable. Connections kept dropping out and it was unclear what their status was at any time. Users have to accept the bluetooth conection and allow pairing between the devices. Even when
   this is done, paired devices would drop their connection. Getting them to reconnect was a
    bewildering process of trial and error.
    
