@@ -45,9 +45,9 @@ The connections between phones provide by the Nearby Conections API were unrelia
   this is done, paired devices would drop their connection. Getting them to reconnect was a
    bewildering process of trial and error.
    
-# Some Design Points:
+# Kanban:
 
-- [ ] add send & receive methods for Nearby Connections API 
+Backlog:
 - [ ] add method of alerting the user to a phone close by using colour, sound and vibration
 - [ ] responsive UI for landscape and portrait
 - [ ] need to get the name of the user (which user adds and the app saves) or the name of the
@@ -57,6 +57,8 @@ The connections between phones provide by the Nearby Conections API were unrelia
  and Android
 - [ ] how best to monetise: add a scotsman voice and pay for more. Make it funny.
 
+Done:
+- [x] add send & receive methods for Nearby Connections API 
 - [x] toggle button for scan on and scan off 
 - [x] ensure Location is forced to use FINE rather than coarse
 - [x] app icon - figures with green lightning arrow
